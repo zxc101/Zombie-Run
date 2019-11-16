@@ -4,15 +4,27 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private void OnTriggerStay(Collider collider)
     {
-        
+        PlayerHealth playerHP = GetPlayer(collider.transform).GetComponent<PlayerHealth>();
+        if (playerHP.tag == "Player")
+        {
+            if (playerHP != null)
+            {
+                playerHP.Damage();
+            }
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private Transform GetPlayer(Transform player)
     {
-        
+        if (player.parent == null)
+        {
+            return player;
+        }
+        else
+        {
+            return GetPlayer(player.parent);
+        }
     }
 }
