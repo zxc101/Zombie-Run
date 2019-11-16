@@ -14,7 +14,7 @@ public class SettingsMenu:MonoBehaviour
     void Start()
     {
         _audioMixer.SetFloat("Volume", _currentVolume);
-
+        
         resolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
 
@@ -24,19 +24,25 @@ public class SettingsMenu:MonoBehaviour
 
         for (int i = 0; i < resolutions.Length; i++)
         {
-            string option = $"{resolutions[i].width}x{resolutions[i].height}";
+            string option = $"{resolutions[i].width} x {resolutions[i].height}";
+            if(!resolutions[i].refreshRate.Equals(Screen.currentResolution.refreshRate))continue;
+            
             options.Add(option);
 
-            if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
+
+
+            if (resolutions[i].width == Screen.width && resolutions[i].height == Screen.height)
             {
                 currentResolutionIndex = i;
             }
         }
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = currentResolutionIndex;
-        resolutionDropdown.RefreshShownValue(); 
+        resolutionDropdown.RefreshShownValue();
 
     }
+
+    
     public void SetVolume(float value)
     {
         _audioMixer.SetFloat("Volume", value);
