@@ -26,22 +26,79 @@ namespace Assets.Scripts
         private Quaternion _characterTargetRot;
         private Quaternion _cameraTargetRot;
 
+        private float Speed { get => _animator.GetFloat("Speed"); set => _animator.SetFloat("Speed", value); }
+        private float Rotate { get => _animator.GetFloat("Rotate"); set => _animator.SetFloat("Rotate", value); }
+        private bool IsRun;
+        private bool IsDead;
+
         void Start()
         {
-           // _animator = gameObject.GetComponent<Animator>();
-            _instance = gameObject.transform;
-            _characterController = _instance.GetComponent<CharacterController>();
-            _head = Camera.main.transform;
+            _animator = gameObject.GetComponent<Animator>();
+            //_instance = gameObject.transform;
+            //_characterController = _instance.GetComponent<CharacterController>();
+            //_head = Camera.main.transform;
 
-            _characterTargetRot = _instance.localRotation;
-            _cameraTargetRot = _head.localRotation;
+            //_characterTargetRot = _instance.localRotation;
+            //_cameraTargetRot = _head.localRotation;
         }
 
         public void Update()
         {
-            CharecterMove();
-            GamingGravity();
-            LookRotation(_instance, _head);
+            IsDead = GetComponent<Player>().HP == 0;
+            if (IsDead)
+            {
+                return;
+            }
+            IsRun = Input.GetKey(KeyCode.LeftShift);
+            if (Input.GetKey(KeyCode.W))
+            {
+                if (IsRun)
+                {
+                    Speed = 2;
+                }
+                else
+                {
+                    Speed = 1;
+                }
+            }
+            else if (Input.GetKey(KeyCode.S))
+            {
+                Speed = -1;
+            }
+            else
+            {
+                Speed = 0;
+            }
+
+            if (Input.GetKey(KeyCode.A))
+            {
+                if (IsRun)
+                {
+                    Rotate = -2;
+                }
+                else
+                {
+                    Rotate = -1;
+                }
+            }
+            else if (Input.GetKey(KeyCode.D))
+            {
+                if (IsRun)
+                {
+                    Rotate = 2;
+                }
+                else
+                {
+                    Rotate = 1;
+                }
+            }
+            else
+            {
+                Rotate = 0;
+            }
+            //CharecterMove();
+            //GamingGravity();
+            //LookRotation(_instance, _head);
         }
 
         private void CharecterMove()
@@ -56,14 +113,14 @@ namespace Assets.Scripts
 
             _moveVector.y = _gravityForce;
             _characterController.Move(_moveVector * Time.deltaTime);
-            
+
         }
 
         private void GamingGravity()
         {
             if (!_characterController.isGrounded) _gravityForce -= 30 * Time.deltaTime;
             else _gravityForce = -1;
-            if (Input.GetKeyDown(KeyCode.Space) && _characterController.isGrounded) _gravityForce = _jumpPower;
+            //if (Input.GetKeyDown(KeyCode.Space) && _characterController.isGrounded) _gravityForce = _jumpPower;
         }
 
         private void LookRotation(Transform character, Transform camera)
